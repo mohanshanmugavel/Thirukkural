@@ -1,0 +1,152 @@
+<html lang="ta">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>குரல் யுத்தம் - N-gram கணிப்பு</title>
+    <!-- Nav styling comes from static/css/basicStyle.css (left vertical nav) -->
+    <link href="https://fonts.googleapis.com/css2?family=Meera+Inimai&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/basicStyle.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/learnThirukkural.css') }}">
+</head>
+
+<body>
+    <!-- using the left fixed nav (ul) styled by basicStyle.css -->
+    <div class="main-container">
+        <div class="navbar-container">
+            <nav class="">
+                <img src="{{ url_for('static', filename='images/muthir-logo.png') }}" alt="Muthir AI" height="120px" width="120px">
+
+                <ul class="">
+                    <li class="nav-cell" id="nav-cell1">
+                        <a href="/index/" class="">
+                            <svg class="nav-icon" id="cell" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z" />
+                                <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-cell">
+                        <a href="/profile" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-cell">
+                        <a href="/logout" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
+                                <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="content-container">
+            <div class="header">
+                <div class="title-content">
+                    <p class="title">குரல் யுத்தம்</p>
+                    <p class="tag-line">N-gram கணிப்பு விளையாட்டு</p>
+                </div>
+                <div class="points-content">
+                    <div class="points">
+                        <div class="point-section">
+                            <img class="point-diamond-img" src="{{ url_for('static', filename='images/diamond.png') }}" alt="Diamonds">
+                            <span class="point-count" id="diamond-points">{{session['user']['points']['diamonds']['total']}}</span>
+                        </div>
+                        <div class="point-section">
+                            <img class="point-coins-img" src="{{ url_for('static', filename='images/star-icon.png') }}" alt="Stars">
+                            <span class="point-count" id="star-points">{{session['user']['points']['stars']['total']}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-container" style="background:#F4E9D8; padding:18px; border-radius:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-weight:bold;">Aadhigaram: <span id="aadhigaram-name">-</span></div>
+                    <div style="font-weight:bold;">Time: <span id="timer-display">0.0</span>s</div>
+                </div>
+
+                <div class="kural-border fillups-border" style="margin-top:12px; padding:12px;">
+                    <div id="kural-full" style="text-align:center; font-size:20px;">
+                        <p id="kural-line1">—</p>
+                        <p id="kural-line2">—</p>
+                    </div>
+                    <div id="kural-masked" style="text-align:center; font-size:20px; margin-top:8px;">
+                        <p id="masked-line-text">—</p>
+                    </div>
+                </div>
+
+                <div class="options-container" style="display:flex; gap:16px; justify-content:center; margin:16px 0;">
+                    <div style="min-width:220px; text-align:center;">
+                        <h4>Blank 1</h4>
+                        <div id="options-0" class="option-tiles"></div>
+                    </div>
+                    <div style="min-width:220px; text-align:center;">
+                        <h4>Blank 2</h4>
+                        <div id="options-1" class="option-tiles"></div>
+                    </div>
+                </div>
+
+                <div style="text-align:center; margin-bottom:16px;">
+                    <button id="submit-answer-btn" class="practice-btn" onclick="submitUserAnswer()">Submit</button>
+                    <button id="next-kural-btn" class="practice-btn" style="display:none;" onclick="loadNewKural()">Next Kural</button>
+                </div>
+
+                <div style="max-width:720px; margin:12px auto; background:rgba(255,255,255,0.85); padding:12px; border-radius:8px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <div>
+                            <p style="font-weight:bold; margin:4px 0;">நீங்கள்</p>
+                            <div id="user-result"></div>
+                            <div id="user-time" style="font-size:13px; color:#666;"></div>
+                        </div>
+                        <div>
+                            <p style="font-weight:bold; margin:4px 0;">இயந்திரம்</p>
+                            <div id="machine-result"></div>
+                            <div id="machine-time" style="font-size:13px; color:#666;"></div>
+                        </div>
+                        <div>
+                            <p style="font-weight:bold; margin:4px 0;">சரி</p>
+                            <div id="correct-word-display"></div>
+                        </div>
+                    </div>
+                    <div id="kural-vilakam-container" style="display:none; margin-top:8px;">
+                        <h4>விளக்கம்</h4>
+                        <div id="kural-vilakam-content"></div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-section" style="margin-top:18px;">
+                    <p style="text-align:center; font-weight:bold; margin-bottom:8px;">முன்னணி பட்டியல்</p>
+                    <table class="leaderboard-table" id="leaderboard-table" style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                        <thead>
+                            <tr class="leaderboard-heading">
+                                <th style="width:8%; text-align:left; padding:8px 6px;">#</th>
+                                <th style="width:60%; text-align:left; padding:8px 6px;">பயனர் பெயர்</th>
+                                <th style="width:16%; text-align:center; padding:8px 6px;">சரி</th>
+                                <th style="width:16%; text-align:center; padding:8px 6px;">சராசரி நேரம்</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <!-- leaderboard rows should be injected here with four <td> columns to match the headers -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="text-align:center; margin-top:20px;">
+                    <a href="/select_game">&#60; பின் செல்ல</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/ngram_game.js"></script>
+</body>
+
+</html>
+

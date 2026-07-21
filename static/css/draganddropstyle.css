@@ -1,0 +1,113 @@
+.game {
+    display: grid;
+    grid-template-columns: 75% 20%;
+    column-gap: 5%;
+}
+
+.block-title {
+    margin: 0;
+    text-align: center;
+    padding: 5px;
+}
+
+.block {
+    border-radius: 10px;
+    border: 2px solid black;
+    padding: 2px 10px 10px 10px;
+}
+
+.words-block {
+    height: 35%;
+}
+
+.words-set {
+    align-items: center;
+    display: flex;
+}
+
+.words-col {
+    flex-direction: column;
+}
+
+.words-row {
+    flex-direction: row;
+}
+
+.word {
+    border: 2px solid black;
+    border-radius: 20px;
+    width: 140px;
+    height: 30px;
+}
+
+.word-row {
+    margin: 2px 5px 10px 5px;
+}
+
+.word-col {
+    margin: 5px 0px 5px 0px;
+}
+
+.text {
+    text-align: center;
+    margin: 3;
+    font-weight: bold;
+}
+
+.drag-submit-container {
+    text-align: right;
+}
+
+.popup-btns a {
+    text-decoration: none;
+}
+
+.popup-btns p {
+    border: 2px solid black;
+    border-radius: 5px;
+    font-size: 20px;
+    padding: 9px 5px 0px 5px;
+    box-shadow: 3px 3px 2px 1px rgb(0, 0, 0);
+    margin: 10px;
+    width: 200px;
+    text-align: center;
+    background-color: rgb(235, 144, 238);
+    font-weight: bold;
+    color: black;
+}
+
+.drag-submit-btn {
+    border-radius: 10px;
+    color: white;
+    font-size: 17px;
+    box-shadow: 5px 5px 10px 1px rgb(0, 0, 0);
+    font-weight: bold;
+    margin: 0;
+    width: 140px;
+    height: 35px;
+}
+
+/* Mobile Devices (480px - 767px) */
+@media (max-width: 767px) {
+    .main-container {
+        width: 95%;
+        padding: 15px;
+    }
+    .button {
+        font-size: 16px;
+        padding: 10px;
+    }
+}
+
+/* Small Phones (Below 480px) */
+@media (max-width: 480px) {
+    .main-container {
+        width: 100%;
+        padding: 10px;
+        border-radius: 0;
+    }
+    .button {
+        font-size: 14px;
+        padding: 8px;
+    }
+}

@@ -1,0 +1,396 @@
+<html lang="ta">
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>திருக்குறள் பழகு</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/basicStyle.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Meera+Inimai&display=swap" rel="stylesheet">
+    <script src="../static/js/app.js"></script>
+    <link rel="stylesheet" href="../static/css/basicStyle.css">
+    <link rel="stylesheet" href="../static/css/learnThirukkural.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="navbar-container">
+            <nav class="">
+                <img src="../static/images/muthir-logo.png" alt="Muthir AI" height="120px" width="120px">
+
+                <ul class="">
+                    <li class="nav-cell" id="nav-cell1">
+                        <a href="/index/" class="">
+                            <svg class="nav-icon" id="cell" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z" />
+                                <path fill-rule="evenodd"
+                                    d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+
+                            </svg>
+                        </a>
+                    </li>
+                    <!-- <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z" />
+                            </svg>
+                        </a>
+                    </li> -->
+                    <!-- <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                <path fill-rule="evenodd"
+                                    d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+                            </svg>
+                        </a>
+                    </li> -->
+                    <!-- <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                <path fill-rule="evenodd"
+                                    d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+                                <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+                            </svg>
+                        </a>
+                    </li> -->
+                    <li class="nav-cell">
+                        <a href="/" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
+                                <path fill-rule="evenodd"
+                                    d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content-container">
+            <div class="header">
+                <div class="title-content">
+                    <p class="title">திருக்குறள் பழகு</p>
+                    <p class="tag-line">உங்கள் குரலில் திருக்குறள்</p>
+
+                </div>
+                <div class="points-content">
+                    <div class="points">
+                        <div class="point-section">
+                            <img class="point-diamond-img" src="../static/images/diamond.png" alt="Diamonds">
+                            <span class="point-count"
+                                id="diamond-points">{{session['user']['points']['diamonds']['total']}}</span>
+                        </div>
+                        <div class="point-section">
+                            <img class="point-coins-img" src="../static/images/star-icon.png" alt="Diamonds">
+                            <span class="point-count"
+                                id="diamond-points">{{session['user']['points']['stars']['total']}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page-container">
+                <div class="page-heading">
+                    <p class="page-title">{{kural['aadhigaram']}}</p>
+                    <p class="kural-number">#குறள்{{kural['kural_id']}}</p>
+                    <input type="text" hidden value="{{kural['kural_id']}}" id="kuralId">
+                </div>
+                <section>
+                    <div class="popup">
+                        <div id="speechTranscriptContainer" class="audio-result">
+                            <h2 id="popupHeader">வாழ்த்துக்கள்</h2>
+                            <p id="resultMessage">
+                                நீங்கள் <span id="wordCount"></span> வார்த்தைகளை சரியாக உச்சரித்துள்ளீர்கள்.
+                            </p>
+                            <p id="coinMessage">
+                                உங்களுக்கு <span id="starCount"></span> நாணயங்கள் கிடைத்துள்ளது.
+                            </p>
+                        </div>
+                        <div class="navigation-btns" id="navigation-btn">
+                            <div class="back">
+                                <a href="/learn_thirukkural?kuralId={{kural['kural_id']}}">
+                                    <p class="back-button">மீண்டும் முயற்சி செய்</p>
+                                </a>
+                            </div>
+                            <div class="next">
+                                <a href="learn_thirukkural?kuralId={{kural['kural_id']+1}}">
+                                    <p class="next-button">அடுத்தது &gt;</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <canvas id="my-canvas"></canvas>
+                <div class="main-content">
+                    <div class="main">
+                        <div class="kural-and-btn">
+                            <div class="kural-content">
+                                <div class="kural-border" style="border: 1px dotted #999; border-radius: 12px; padding: 20px; position: relative; background-color: white;">
+                                    <p class="kural">
+                                        {% for word in kural['kural'][0][0].split() %}
+                                        <span class="kural-word" data-index="{{loop.index0}}" data-word="{{word}}">{{word}}</span>
+                                        {% endfor %}
+                                    </p>
+                                    <p class="kural">
+                                        {% for word in kural['kural'][1][0].split() %}
+                                        <span class="kural-word" data-index="{{ loop.index0 + kural['kural'][0][0].split()|length }}" data-word="{{word}}">{{word}}</span>
+                                        {% endfor %}
+                                    </p>
+                                    <button class="listen-btn" onclick="playKural()" style="position: absolute; bottom: 10px; right: 10px; padding: 5px 12px; font-size: 13px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                        🔊 கேள்
+                                    </button>
+                                </div>
+                            </div>
+                            <audio id="myAudio"></audio>
+                        </div>
+                        <!-- {% if transcript != "" %}
+                        <div id="speechTranscriptContainer" class="audio-result">
+                            <p id="speechText">
+                                நீங்கள் <span>{{ mark }}</span> வார்த்தைகளை சரியாக உச்சரித்துள்ளீர்கள்.
+                            </p>
+                            <p id="speechText">
+                                உங்களுக்கு <span>{{ coins }}</span>
+                                <img class="point-coins-img" src="../static/images/star-icon.png" alt="Diamonds">
+                                கிடைத்துள்ளது.
+                            </p>
+                        </div>
+                        {% endif %} -->
+                        <div>
+                            <div class="button-container practice-container" id="controls" style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+                                <button id="recordButton" class="pill-btn record-btn">
+                                    🎤 ரெக்கார்டு
+                                </button>
+                                <button id="pauseButton" disabled class="pill-btn pause-btn">
+                                    ⏸ இடைநிறுத்து
+                                </button>
+                                <button id="stopButton" disabled class="pill-btn stop-btn">
+                                    ⏹ நிறுத்து
+                                </button>
+                            </div>
+                            <div>
+                                <div id="">
+                                    <!-- <button id="recordButton">Record</button>
+                                    <button id="pauseButton" disabled>Pause</button>
+                                    <button id="stopButton" disabled>Stop</button> -->
+                                </div>
+                                <!-- <div id="formats">Format: start recording to see sample rate</div> -->
+                                <ol id="recordingsList" style="list-style: none; padding: 0;"></ol>
+                                
+                                <!-- Result Card -->
+                                <div id="resultCard" style="display: none; margin-top: 15px; background: transparent;">
+                                    <div style="display: flex; justify-content: flex-end; width: 100%;">
+                                        <h3 style="color: #4CAF50; margin-top:0; font-size: 1.1rem; text-align: right;">முடிவு / Result</h3>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <span style="font-weight: bold; font-size: 0.9rem;">துல்லியம் (Accuracy): <span id="accuracyText">0%</span></span>
+                                        <span style="font-weight: bold; font-size: 1.1rem; color: #007bff;" id="scoreText">0 / 0</span>
+                                    </div>
+                                    <div style="width: 100%; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; height: 8px; margin-bottom: 20px;">
+                                        <div id="accuracyBar" style="width: 0%; height: 100%; background-color: #4CAF50; transition: width 0.8s ease-in-out;"></div>
+                                    </div>
+                                    
+                                    <div id="wrongWordsContainer" style="display: none; margin-bottom: 12px; background: #ffebee; padding: 12px; border-radius: 8px;">
+                                        <p style="margin: 0 0 8px 0; color: #d32f2f; font-weight: bold; font-size: 0.9rem;">தவறான வார்த்தைகள் (<span id="wrongCount">0</span>):</p>
+                                        <ul id="wrongWordsList" style="margin: 0; padding-left: 20px; color: #b71c1c; font-size: 0.85rem; line-height: 1.4;"></ul>
+                                    </div>
+                                    
+                                    <div id="missingWordsContainer" style="display: none; background: #fff3e0; padding: 12px; border-radius: 8px;">
+                                        <p style="margin: 0 0 8px 0; color: #e65100; font-weight: bold; font-size: 0.9rem;">விடுபட்ட வார்த்தைகள் (<span id="missingCount">0</span>):</p>
+                                        <ul id="missingWordsList" style="margin: 0; padding-left: 20px; color: #e65100; font-size: 0.85rem; line-height: 1.4;"></ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="navigation-btns" id="bottomActions" style="display: none; margin-top: 15px;">
+                                    <div class="back">
+                                        <a href="/learn_thirukkural?kuralId={{kural['kural_id']}}">
+                                            <p class="back-button">மீண்டும் முயற்சி செய்</p>
+                                        </a>
+                                    </div>
+                                    <div class="next">
+                                        <a href="/learn_thirukkural?kuralId={{kural['kural_id']+1}}">
+                                            <p class="next-button">அடுத்தது &gt;</p>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+                                <script
+                                    src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+                                <script src="../static/js/recordAudio.js"></script>
+                            </div>
+                            <div class="kural-vilakam-container">
+                                <div class="kural-vilakam-heading">
+                                    <p>குறள் விளக்கம்:</p>
+                                </div>
+                                <div class="kural-vilakam">
+                                    <p><span> மு.வ : </span>
+                                        {{kural['porul']['Muuvey']}}
+                                    </p>
+                                    <p><span> சாலமன் பாப்பையா : </span>
+                                        {{kural['porul']['salaman']}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="navigation-btns" id="originalNav">
+                            <div class="back">
+                                <a href="/select_adhigaram">
+                                    <p class="back-button">&#60; பின் செல்ல </p>
+                                </a>
+                            </div>
+                            <div class="next">
+                                <a href="">
+                                    <p class="next-button">அடுத்தது &gt;</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../static/js/index.min.js"></script>
+        <script>
+            // Hide original nav when result is shown
+            const btnObserver = new MutationObserver(function() {
+                if (document.getElementById('bottomActions').style.display !== 'none') {
+                    document.getElementById('originalNav').style.display = 'none';
+                }
+            });
+            btnObserver.observe(document.getElementById('bottomActions'), { attributes: true, attributeFilter: ['style'] });
+            
+            var x = document.getElementById("myAudio");
+            function playKural() {
+                console.log("=== playKural() Clicked ===");
+                var kuralIdEl = document.getElementById("kuralId");
+                console.log("kuralIdEl element:", kuralIdEl);
+                var kuralId = kuralIdEl ? kuralIdEl.value : null;
+                console.log("kuralId value:", kuralId);
+                if (!kuralId) {
+                    console.error("Error: kuralId not found in page!");
+                    return;
+                }
+
+                var btn = document.querySelector(".listen-btn");
+                var originalContent = btn.innerHTML;
+                console.log("Updating button to loading state...");
+                btn.innerHTML = 'ஏற்றப்படுகிறது...';
+                btn.disabled = true;
+
+                var url = '/get_kural_audio/' + kuralId;
+                console.log("Initiating fetch to backend route:", url);
+
+                fetch(url)
+                    .then(function (response) {
+                        console.log("Received response from backend, status:", response.status);
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        console.log("Parsed JSON response data:", data);
+                        if (data.audio_url) {
+                            console.log("Setting audio element source to:", data.audio_url);
+                            x.src = data.audio_url;
+                            x.load();
+                            console.log("Triggering audio play...");
+                            x.play().then(function () {
+                                console.log("Playback successfully started!");
+                                btn.innerHTML = originalContent;
+                                btn.disabled = false;
+                            }).catch(function (e) {
+                                console.error("Browser playback blocked or failed:", e);
+                                btn.innerHTML = originalContent;
+                                btn.disabled = false;
+                            });
+                        } else {
+                            console.error("Backend did not return audio_url:", data);
+                            btn.innerHTML = originalContent;
+                            btn.disabled = false;
+                            alert("ஆடியோ ஏற்றப்பட முடியவில்லை.");
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error("Fetch promise execution rejected/failed:", err);
+                        btn.innerHTML = originalContent;
+                        btn.disabled = false;
+                    });
+            }
+
+            function openPopup() {
+                popup.classList.add('active');
+                confe.classList.add('active');
+            }
+            let popup = document.querySelector('.popup');
+            let close = document.querySelector('.close');
+            let confe = document.querySelector('#my-canvas');
+
+
+            function loadActionSequence() {
+                var kuralIdEl = document.getElementById("kuralId");
+                var kuralId = kuralIdEl ? kuralIdEl.value : null;
+                if (!kuralId) return;
+
+                var url = '/get_kural_action/' + kuralId;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.video_url) {
+                            var loadingEl = document.getElementById('actionLoading');
+                            if (loadingEl) loadingEl.style.display = 'none';
+
+                            const slideshow = document.getElementById('kenBurnsSlideshow');
+                            if (!slideshow) return;
+
+                            // Clear any existing content
+                            slideshow.innerHTML = '';
+
+                            // Create video element
+                            const video = document.createElement('video');
+                            video.src = data.video_url;
+                            video.autoplay = true;
+                            video.loop = true;
+                            video.muted = true;
+                            video.playsInline = true;
+                            video.style.width = '100%';
+                            video.style.height = '100%';
+                            video.style.objectFit = 'cover';
+                            video.style.borderRadius = '8px';
+                            video.style.boxShadow = '0px 4px 8px rgba(0,0,0,0.2)';
+
+                            slideshow.appendChild(video);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to load action sequence', err);
+                        var loadingEl = document.getElementById('actionLoading');
+                        if (loadingEl) loadingEl.innerHTML = '<p>Failed to load AI video</p>';
+                    });
+            }
+
+            // Call it immediately since script is at the bottom of body
+            loadActionSequence();
+
+            var confettiSettings = { target: 'my-canvas' };
+            var confetti = new ConfettiGenerator(confettiSettings);
+            confetti.render();
+
+
+        </script>
+</body>
+
+</html>

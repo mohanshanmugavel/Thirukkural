@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>உள்நுழைவு/Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/basicStyle.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Meera+Inimai&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/login.css">
+</head>
+
+<body >
+  <div class="header">
+    <div class="title-content">
+  <p class="title">திருக்குறள் பழகு</p>
+      <p class="tag-line">உங்கள் குரலில் திருக்குறள்</p>
+    </div>
+  </div>
+  <div class="main-container">
+    <div class="image-container">
+      <div class="content image-content">
+      </div>
+    </div>
+    <div class="login-container">
+      <div class="login-content content">
+        <div class="login-heading">
+          <h2>உள்நுழைவு/Login</h2>
+        </div>
+        <div class="login-form">
+          <form name="login_form">
+            <input type="email" class="form-input" name="email" id="email" placeholder="மின்னஞ்சல்/email">
+            <input type="password" class="form-input" name="password" id="password" placeholder="கடவுச்சொல்/password">
+            <p class="error"></p>
+            <div class="navigation-btns">
+              <div class="back">
+                <button type="submit" class="login-button back-button">உள்நுழைவு/Login</button>
+              </div>
+              <div class="next">
+                <a href="/register/">
+                  <p class="login-button next-button">புதிய பயனர்/New User</p>
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/static/js/jquery.js"></script>
+  <script src="/static/js/scripts.js"></script>
+</body>
+
+</html>

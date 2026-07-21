@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>புதிய பயனர்/New User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Meera+Inimai&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/basicStyle.css') }}">
+    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="../static/css/signupcss.css">
+
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="title-content">
+            <p class="title">திருக்குறள் பழகு</p>
+            <p class="tag-line">உங்கள் குரலில் திருக்குறள்</p>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="login-container">
+            <div class="login-content signup-content">
+                <div class="signup-heading">
+                    <h2>புதிய பயனர்/New User</h2>
+                </div>
+                <div class="signup-form">
+                    <form name="signup_form">
+                        <input type="text" name="name" class="form-signup-input" placeholder="உங்கள் பெயர்"
+                            aria-label="First name">
+                        <input type="email" name="email" class="form-signup-input" placeholder="மின்னஞ்சல்"
+                            id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <input type="password" name="password" class="form-signup-input" placeholder="கடவுச்சொல்"
+                            id="exampleInputPassword1">
+                        <input type="password" name="cpassword" class="form-signup-input"
+                            placeholder="கடவுச்சொல்லை மீண்டும் தட்டச்சு செய்க" id="exampleInputPassword1">
+                        <p class="error error--hidden"></p>
+                        <div class="navigation-signup-btns">
+                            <div class="back">
+                                <button type="submit" class="login-button back-button">பதிவு</button>
+                            </div>
+                            <div class="next">
+                                <a href="/">
+                                    <p class="login-button next-button">உள்நுழைவு/Login</p>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="signup-image-container">
+            <div class="content signup-image-content">
+            </div>
+        </div>
+     </div>
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/scripts.js"></script>
+      
+</body>
+
+</html>

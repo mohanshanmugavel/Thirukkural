@@ -1,0 +1,202 @@
+<html lang="ta">
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>திருக்குறள் பழகு</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Meera+Inimai&display=swap" rel="stylesheet">
+    <script src="../static/js/select_adhigaram.js"></script>
+    <link rel="stylesheet" href="../static/css/basicStyle.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/basicStyle.css') }}">
+    <link rel="stylesheet" href="../static/css/select_adhigaram.css">
+    <link rel="stylesheet" href="../static/css/learnThirukkural.css">
+</head>
+
+<body onload="loadDropDown()">
+    <div class="main-container">
+        <div class="navbar-container">
+            <nav class="">
+                   <img src="../static/images/muthir-logo.png" alt="Muthir AI" height="120px" width="120px">
+
+                <ul class="">
+                    <li class="nav-cell" id="nav-cell1">
+                        <a href="/index/" class="">
+                            <svg class="nav-icon" id="cell" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z" />
+                                <path fill-rule="evenodd"
+                                    d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+
+                            </svg>
+                        </a>
+                    </li>
+                                        <!-- <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z" />
+                            </svg>
+                        </a>
+                    </li> -->
+                    <!-- <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                <path fill-rule="evenodd"
+                                    d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+                            </svg>
+                        </a>
+                    </li> -->
+                    <!-- <li class="nav-cell">
+                        <a href="" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                <path fill-rule="evenodd"
+                                    d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+                                <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+                            </svg>
+                        </a>
+                    </li> -->
+                    <li class="nav-cell">
+                        <a href="/" class="">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-house-door" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
+                                <path fill-rule="evenodd"
+                                    d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content-container">
+            <div class="header">
+                <div class="title-content">
+                    <p class="title">திருக்குறள் பழகு</p>
+                    <p class="tag-line">உங்கள் குரலில் திருக்குறள்</p>
+                </div>
+                <div class="points-content">
+                    <div class="points">
+                        <div class="point-section">
+                            <img class="point-diamond-img" src="../static/images/diamond.png" alt="Diamonds">
+                            <span class="point-count" id="diamond-points">{{session['user']['points']['diamonds']['total']}}</span>
+                        </div>
+                        <div class="point-section">
+                            <img class="point-coins-img" src="../static/images/star-icon.png" alt="Diamonds">
+                            <span class="point-count" id="diamond-points">{{session['user']['points']['stars']['total']}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page-container">
+                <div class="page-heading">
+                    <p class="page-title">அதிகாரங்கள்</p>
+                </div>
+                <div class="main-content">
+                    <div class="main">
+                        <div class="filer-container">
+                            <form name="adhigaram_filter_form" id="adhigaram_filter_form">
+                                <label for="select_pal">குறள் பால்</label>
+                                <select id="select_pal" name="select_pal">
+                                    <option value="" selected="selected">பால் தேர்வு செய்</option>
+                                </select>
+                                <label for="select_iyal">குறள் இயல்</label>
+                                <select id="select_iyal" name="select_iyal">
+                                    <option value="" selected="selected">பால் தேர்வு செய்</option>
+                                </select>
+                                <label for="select_adhigaram">அதிகாரம்</label>
+                                <select id="select_adhigaram" name="select_adhigaram">
+                                    <option value="" selected="selected">இயல் தேர்வு செய்</option>
+                                </select>
+                                <input type="submit" class="filter-submit-btn"  value="வகைப்படுத்து">
+                            </form>
+                        </div>
+                        <div class="kural-container">
+                            <div class="adigaram-row" id="adigaram-collections">
+                                <a href="learn_thirukkural?kuralId=1" id="select-kural-1">
+                                    <div class="adigaram" >
+                                        குறள் <span id="kural-1">1</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=2" id="select-kural-2">
+                                    <div class="adigaram" >
+                                        குறள் <span id="kural-2">2</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=3" id="select-kural-3">
+                                    <div class="adigaram ">
+                                        குறள் <span id="kural-3">3</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=4" id="select-kural-4">
+                                    <div class="adigaram ">
+                                        குறள் <span id="kural-4">4</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=5" id="select-kural-5">
+                                    <div class="adigaram ">
+                                        குறள் <span id="kural-5">5</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="adigaram-row">
+                                <a href="learn_thirukkural?kuralId=6" id="select-kural-6">
+                                    <div class="adigaram ">
+                                        குறள் <span id="kural-6">6</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=7" id="select-kural-7">
+                                    <div class="adigaram" >
+                                        குறள் <span id="kural-7">7</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=8" id="select-kural-8">
+                                    <div class="adigaram ">
+                                        குறள் <span id="kural-8">8</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=9" id="select-kural-9">
+                                    <div class="adigaram ">
+                                        குறள் <span id="kural-9">9</span>
+                                    </div>
+                                </a>
+                                <a href="learn_thirukkural?kuralId=10" id="select-kural-10">
+                                    <div class="adigaram ">
+                                        குறள் <span id="kural-10">10</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navigation-btns">
+                        <div class="back">
+                            <a href="/index/">
+                                <p class="back-button">&#60; பின் செல்ல </p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/scripts.js"></script>
+      
+</body>
+
+</html>

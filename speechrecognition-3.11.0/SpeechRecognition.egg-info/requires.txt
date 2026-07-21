@@ -1,0 +1,16 @@
+requests>=2.26.0
+typing-extensions
+
+[audio]
+PyAudio>=0.2.11
+
+[dev]
+flake8
+rstcheck
+
+[whisper-api]
+openai
+
+[whisper-local]
+openai-whisper
+soundfile
