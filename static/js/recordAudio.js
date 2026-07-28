@@ -75,51 +75,49 @@ function startRecording() {
         https://addpipe.com/blog/audio-constraints-getusermedia/
     */
 
-    var constraints = { audio: true, video: false }
-
-    /*
-        Disable the record button until we get a success or fail from getUserMedia() 
-    */
+    var constraints = {
+        audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            channelCount: 1
+        },
+        video: false
+    };
 
     recordButton.disabled = true;
     stopButton.disabled = false;
     pauseButton.disabled = false
 
-    /*
-        We're using the standard promise based getUserMedia() 
-        https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-    */
-
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-        console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
+        console.log("getUserMedia() success with noise cancellation, stream created...");
 
-        /*
-            create an audio context after getUserMedia is called
-            sampleRate might change after getUserMedia is called, like it does on macOS when recording through AirPods
-            the sampleRate defaults to the one set in your OS for your playback device
-
-        */
         audioContext = new AudioContext();
-
-        //update the format 
-        // document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
-
-        /*  assign to gumStream for later use  */
         gumStream = stream;
 
-        /* use the stream */
         input = audioContext.createMediaStreamSource(stream);
 
-        /* 
-            Create the Recorder object and configure to record mono sound (1 channel)
-            Recording 2 channels  will double the file size
-        */
-        rec = new Recorder(input, { numChannels: 1 })
-        rec.mimeType = 'audio/wav';
-        //start the recording process
-        rec.record()
+        // Noise Cancellation Filter (High-pass filter at 80Hz to eliminate low-frequency rumble)
+        var highpassFilter = audioContext.createBiquadFilter();
+        highpassFilter.type = 'highpass';
+        highpassFilter.frequency.setValueAtTime(80, audioContext.currentTime);
 
-        console.log("Recording started");
+        // Dynamics Compressor to equalize vocal range for child & adult speech
+        var compressor = audioContext.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-45, audioContext.currentTime);
+        compressor.knee.setValueAtTime(30, audioContext.currentTime);
+        compressor.ratio.setValueAtTime(12, audioContext.currentTime);
+        compressor.attack.setValueAtTime(0.003, audioContext.currentTime);
+        compressor.release.setValueAtTime(0.25, audioContext.currentTime);
+
+        input.connect(highpassFilter);
+        highpassFilter.connect(compressor);
+
+        rec = new Recorder(compressor, { numChannels: 1 });
+        rec.mimeType = 'audio/wav';
+        rec.record();
+
+        console.log("Recording started with noise cancellation and vocal equalization");
 
     }).catch(function (err) {
         //enable the record button if getUserMedia() fails
@@ -197,20 +195,35 @@ function createDownloadLink(blob) {
     upload.className = 'submit-audio';
     upload.innerHTML = 'சமர்ப்பி <svg class="audio-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic" viewBox="0 0 16 16"><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" /><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z" /></svg>';
     upload.addEventListener("click", function (event) {
+        upload.disabled = true;
+        upload.innerHTML = 'சரிபார்க்கிறது... ⏳';
+
         var xhr = new XMLHttpRequest();
         xhr.onload = function (e) {
+            upload.disabled = false;
+            upload.innerHTML = 'சமர்ப்பி <svg class="audio-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic" viewBox="0 0 16 16"><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" /><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0-3-3z" /></svg>';
+
             if (this.readyState === 4) {
                 var response = e.target.responseText;
                 console.log("Server response:", response);
                 try {
                     var data = JSON.parse(response.trim());
+
+                    if (data.status === "unrecognized" || data.status === "error") {
+                        var msg = data.message || "குரல் சரியாகக் கேட்கவில்லை. மீண்டும் முயற்சி செய்யவும்.";
+                        alert(msg);
+                    }
                     
                     // Highlight Words based on strict left-to-right matching
-                    highlightKuralWords(data.word_statuses);
+                    if (data.word_statuses && Array.isArray(data.word_statuses)) {
+                        highlightKuralWords(data.word_statuses);
+                    }
                     
                     // Update Result Card UI
-                    document.getElementById('resultCard').style.display = 'block';
-                    document.getElementById('bottomActions').style.display = 'grid';
+                    var resultCard = document.getElementById('resultCard');
+                    var bottomActions = document.getElementById('bottomActions');
+                    if (resultCard) resultCard.style.display = 'block';
+                    if (bottomActions) bottomActions.style.display = 'grid';
 
                     var controlsEl = document.getElementById('controls');
                     if (controlsEl) controlsEl.style.display = 'none';
@@ -219,56 +232,62 @@ function createDownloadLink(blob) {
                     var vilakamEl = document.querySelector('.kural-vilakam-container');
                     if (vilakamEl) vilakamEl.style.display = 'none';
                     
-                    document.getElementById('accuracyText').innerText = data.accuracy + "%";
-                    document.getElementById('accuracyBar').style.width = data.accuracy + "%";
-                    document.getElementById('scoreText').innerText = data.count + " / " + data.total;
+                    if (document.getElementById('accuracyText')) document.getElementById('accuracyText').innerText = (data.accuracy || 0) + "%";
+                    if (document.getElementById('accuracyBar')) document.getElementById('accuracyBar').style.width = (data.accuracy || 0) + "%";
+                    if (document.getElementById('scoreText')) document.getElementById('scoreText').innerText = (data.count || 0) + " / " + (data.total || 0);
                     
                     var wrongWordsContainer = document.getElementById('wrongWordsContainer');
                     var wrongWordsList = document.getElementById('wrongWordsList');
-                    wrongWordsList.innerHTML = '';
-                    if (data.wrong_words && data.wrong_words.length > 0) {
-                        wrongWordsContainer.style.display = 'block';
-                        document.getElementById('wrongCount').innerText = data.wrong_words.length;
-                        data.wrong_words.forEach(function(w) {
-                            var li = document.createElement('li');
-                            li.innerHTML = `<strong>எதிர்பார்த்தது:</strong> ${w.expected} <br><strong>நீங்கள் கூறியது:</strong> ${w.said || '<em>(எதுவுமில்லை)</em>'}`;
-                            wrongWordsList.appendChild(li);
-                        });
-                    } else {
-                        wrongWordsContainer.style.display = 'none';
-                        document.getElementById('wrongCount').innerText = "0";
+                    if (wrongWordsContainer && wrongWordsList) {
+                        wrongWordsList.innerHTML = '';
+                        if (data.wrong_words && data.wrong_words.length > 0) {
+                            wrongWordsContainer.style.display = 'block';
+                            if (document.getElementById('wrongCount')) document.getElementById('wrongCount').innerText = data.wrong_words.length;
+                            data.wrong_words.forEach(function(w) {
+                                var li = document.createElement('li');
+                                li.innerHTML = `<strong>எதிர்பார்த்தது:</strong> ${w.expected} <br><strong>நீங்கள் கூறியது:</strong> ${w.said || '<em>(எதுவுமில்லை)</em>'}`;
+                                wrongWordsList.appendChild(li);
+                            });
+                        } else {
+                            wrongWordsContainer.style.display = 'none';
+                            if (document.getElementById('wrongCount')) document.getElementById('wrongCount').innerText = "0";
+                        }
                     }
 
                     var missingWordsContainer = document.getElementById('missingWordsContainer');
                     var missingWordsList = document.getElementById('missingWordsList');
-                    missingWordsList.innerHTML = '';
-                    if (data.missing_words && data.missing_words.length > 0) {
-                        missingWordsContainer.style.display = 'block';
-                        document.getElementById('missingCount').innerText = data.missing_words.length;
-                        data.missing_words.forEach(function(w) {
-                            var li = document.createElement('li');
-                            li.innerText = w;
-                            missingWordsList.appendChild(li);
-                        });
-                    } else {
-                        missingWordsContainer.style.display = 'none';
-                        document.getElementById('missingCount').innerText = "0";
+                    if (missingWordsContainer && missingWordsList) {
+                        missingWordsList.innerHTML = '';
+                        if (data.missing_words && data.missing_words.length > 0) {
+                            missingWordsContainer.style.display = 'block';
+                            if (document.getElementById('missingCount')) document.getElementById('missingCount').innerText = data.missing_words.length;
+                            data.missing_words.forEach(function(w) {
+                                var li = document.createElement('li');
+                                li.innerText = w;
+                                missingWordsList.appendChild(li);
+                            });
+                        } else {
+                            missingWordsContainer.style.display = 'none';
+                            if (document.getElementById('missingCount')) document.getElementById('missingCount').innerText = "0";
+                        }
                     }
 
                     var extraWordsContainer = document.getElementById('extraWordsContainer');
                     var extraWordsList = document.getElementById('extraWordsList');
-                    extraWordsList.innerHTML = '';
-                    if (data.extra_words && data.extra_words.length > 0) {
-                        extraWordsContainer.style.display = 'block';
-                        document.getElementById('extraCount').innerText = data.extra_words.length;
-                        data.extra_words.forEach(function(w) {
-                            var li = document.createElement('li');
-                            li.innerText = w;
-                            extraWordsList.appendChild(li);
-                        });
-                    } else {
-                        extraWordsContainer.style.display = 'none';
-                        document.getElementById('extraCount').innerText = "0";
+                    if (extraWordsContainer && extraWordsList) {
+                        extraWordsList.innerHTML = '';
+                        if (data.extra_words && data.extra_words.length > 0) {
+                            extraWordsContainer.style.display = 'block';
+                            if (document.getElementById('extraCount')) document.getElementById('extraCount').innerText = data.extra_words.length;
+                            data.extra_words.forEach(function(w) {
+                                var li = document.createElement('li');
+                                li.innerText = w;
+                                extraWordsList.appendChild(li);
+                            });
+                        } else {
+                            extraWordsContainer.style.display = 'none';
+                            if (document.getElementById('extraCount')) document.getElementById('extraCount').innerText = "0";
+                        }
                     }
 
                     // Perfect Score Check
@@ -276,12 +295,15 @@ function createDownloadLink(blob) {
                         playSuccessSound();
                         var confe = document.querySelector('#my-canvas');
                         if (confe) confe.classList.add('active');
-                        var confettiSettings = { target: 'my-canvas' };
-                        var confetti = new ConfettiGenerator(confettiSettings);
-                        confetti.render();
+                        if (typeof ConfettiGenerator !== 'undefined') {
+                            var confettiSettings = { target: 'my-canvas' };
+                            var confetti = new ConfettiGenerator(confettiSettings);
+                            confetti.render();
+                        }
                     }
                 } catch (err) {
                     console.error("Failed to parse JSON response or update UI:", err);
+                    alert("பிழை ஏற்பட்டது. மீண்டும் முயற்சி செய்யவும்.");
                 }
                 
                 if (document.getElementById('kural-audio-file')) {
@@ -289,12 +311,26 @@ function createDownloadLink(blob) {
                 }
             }
         };
+
+        xhr.onerror = function() {
+            upload.disabled = false;
+            upload.innerHTML = 'சமர்ப்பி <svg class="audio-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic" viewBox="0 0 16 16"><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z" /><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0-3-3z" /></svg>';
+            alert("சேவையகத்தை தொடர்பு கொள்ள முடியவில்லை. இணைய இணைப்பை சரிபார்க்கவும்.");
+        };
+
         var fd = new FormData();
         fd.append("audio_data", blob, filename);
-        fd.append("getKuralId", document.getElementById('kuralId').value)
+        var kuralIdEl = document.getElementById('kuralId');
+        var kuralIdVal = kuralIdEl ? kuralIdEl.value : "1";
+        fd.append("getKuralId", kuralIdVal);
+
+        var voiceModeEl = document.getElementById('voiceModeInput');
+        var voiceModeVal = voiceModeEl ? voiceModeEl.value : "child";
+        fd.append("voice_mode", voiceModeVal);
+
         xhr.open("POST", "/transaltee", true);
         xhr.send(fd);
-    })
+    });
     li.appendChild(upload)//add the upload link to li
 
     //add the li element to the ol

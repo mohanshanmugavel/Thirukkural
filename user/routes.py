@@ -40,6 +40,13 @@ def learn_thirukkural():
     return kural().learn_thirukkural()
 
 
+@app.route('/kural_yutham', methods=["GET"])
+@login_required
+def kural_yutham():
+    return kural().kural_yutham()
+
+
+
 
 @app.route('/drag_drop_game', methods=["GET"])
 def drag_drop_game():

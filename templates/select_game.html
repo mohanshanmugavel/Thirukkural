@@ -127,8 +127,7 @@
                                 <select id="select_adhigaram" name="select_adhigaram">
                                     <option value="" selected="selected">இயல் தேர்வு செய்</option>
                                 </select>
-                                <input type="checkbox" id="random_kural" name="random_kural"  class="random-checkbox" value="1"
-                                    onclick="showAdhigaram()">
+                                <input type="checkbox" id="random_kural" name="random_kural" class="random-checkbox" value="1" checked onclick="showAdhigaram()">
                                 <label for="random_kural">ரெண்டோம் குறள்</label>
                             </div>
                             <div class="kural-container">
@@ -137,8 +136,8 @@
                                     <label for="drag-drop-input" class="game-label" id="drag-drop-label"><!--ட்ராப் & ட்ரோப்-->வரிசைப்படுத்து</label>
                                     <input type="radio" value="/fillups_game" id="choose-input" name="game_type" class="game-input">
                                     <label for="choose-input" class="game-label" id="choose-label">தேர்ந்தெடுக்க</label>
-                                    <input type="radio" value="/ngram/game" id="ngram-input" name="game_type" class="game-input">
-                                    <label for="ngram-input" class="game-label" id="ngram-label">குரல் யுத்தம்</label> 
+                                    <input type="radio" value="/kural_yutham" id="kural-yutham-input" name="game_type" class="game-input" checked>
+                                    <label for="kural-yutham-input" class="game-label" id="ngram-label">குரல் யுத்தம்</label> 
                                 </div>
                                 <div class="form-errors">
                                     <p class="error"></p>
@@ -173,6 +172,37 @@
                     document.getElementById("select_adhigaram").disabled = false;
                 }
             }
+
+            function setupDropdownAutoUncheck() {
+                var randomCb = document.getElementById("random_kural");
+                var selectPal = document.getElementById("select_pal");
+                var selectIyal = document.getElementById("select_iyal");
+                var selectAdhigaram = document.getElementById("select_adhigaram");
+
+                function uncheckRandom() {
+                    if (randomCb && randomCb.checked) {
+                        randomCb.checked = false;
+                        showAdhigaram();
+                    }
+                }
+
+                if (selectPal) {
+                    selectPal.addEventListener("change", uncheckRandom);
+                    selectPal.addEventListener("focus", uncheckRandom);
+                }
+                if (selectIyal) {
+                    selectIyal.addEventListener("change", uncheckRandom);
+                    selectIyal.addEventListener("focus", uncheckRandom);
+                }
+                if (selectAdhigaram) {
+                    selectAdhigaram.addEventListener("change", uncheckRandom);
+                    selectAdhigaram.addEventListener("focus", uncheckRandom);
+                }
+
+                showAdhigaram();
+            }
+
+            window.addEventListener("DOMContentLoaded", setupDropdownAutoUncheck);
         </script>
 
 </body>

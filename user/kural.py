@@ -25,6 +25,16 @@ class kural:
             query = {"kural_id": int(kuralId)}
             return render_template('learn_thirukkural.html', kural=kural_data.find_one(query))
 
+    def kural_yutham(self):
+        if request.method == "GET":
+            kuralId = request.args.get("kuralId")
+            if not kuralId:
+                kuralId = random.randint(1, 1330)
+            kural_data = db['kural_data']
+            query = {"kural_id": int(kuralId)}
+            return render_template('kural_yutham.html', kural=kural_data.find_one(query))
+
+
     def selected_game(self):
         if request.method == "POST":
             select_adhigaram = request.form.get('select_adhigaram')

@@ -155,17 +155,25 @@
 
 .navigation-btns p {
     border: 2px solid black;
-    border-radius: 5px;
-    font-size: 20px;
-    padding: 5px;
+    border-radius: 6px;
+    font-size: 17px;
+    padding: 6px 14px;
     box-shadow: 3px 3px 2px 1px rgb(0, 0, 0);
     margin: 10px;
-    width: 160px;
-    height: 25px;
+    min-width: 140px;
+    width: max-content;
+    max-width: 100%;
+    height: auto;
+    min-height: 38px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     background-color: rgb(235, 144, 238);
     font-weight: bold;
     color: black;
+    white-space: nowrap;
 }
 
 .back-button {

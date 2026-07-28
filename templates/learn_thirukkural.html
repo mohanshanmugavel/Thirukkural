@@ -112,48 +112,27 @@
                     <p class="kural-number">#குறள்{{kural['kural_id']}}</p>
                     <input type="text" hidden value="{{kural['kural_id']}}" id="kuralId">
                 </div>
-                <section>
-                    <div class="popup">
-                        <div id="speechTranscriptContainer" class="audio-result">
-                            <h2 id="popupHeader">வாழ்த்துக்கள்</h2>
-                            <p id="resultMessage">
-                                நீங்கள் <span id="wordCount"></span> வார்த்தைகளை சரியாக உச்சரித்துள்ளீர்கள்.
-                            </p>
-                            <p id="coinMessage">
-                                உங்களுக்கு <span id="starCount"></span> நாணயங்கள் கிடைத்துள்ளது.
-                            </p>
-                        </div>
-                        <div class="navigation-btns" id="navigation-btn">
-                            <div class="back">
-                                <a href="/learn_thirukkural?kuralId={{kural['kural_id']}}">
-                                    <p class="back-button">மீண்டும் முயற்சி செய்</p>
-                                </a>
-                            </div>
-                            <div class="next">
-                                <a href="learn_thirukkural?kuralId={{kural['kural_id']+1}}">
-                                    <p class="next-button">அடுத்தது &gt;</p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <canvas id="my-canvas"></canvas>
                 <div class="main-content">
                     <div class="main">
                         <div class="kural-and-btn">
                             <div class="kural-content">
-                                <div class="kural-border" style="border: 1px dotted #999; border-radius: 12px; padding: 20px; position: relative; background-color: white;">
+                                <div class="kural-border"
+                                    style="border: 1px dotted #999; border-radius: 12px; padding: 20px; position: relative; background-color: white;">
                                     <p class="kural">
                                         {% for word in kural['kural'][0][0].split() %}
-                                        <span class="kural-word" data-index="{{loop.index0}}" data-word="{{word}}">{{word}}</span>
+                                        <span class="kural-word" data-index="{{loop.index0}}"
+                                            data-word="{{word}}">{{word}}</span>
                                         {% endfor %}
                                     </p>
                                     <p class="kural">
                                         {% for word in kural['kural'][1][0].split() %}
-                                        <span class="kural-word" data-index="{{ loop.index0 + kural['kural'][0][0].split()|length }}" data-word="{{word}}">{{word}}</span>
+                                        <span class="kural-word"
+                                            data-index="{{ loop.index0 + kural['kural'][0][0].split()|length }}"
+                                            data-word="{{word}}">{{word}}</span>
                                         {% endfor %}
                                     </p>
-                                    <button class="listen-btn" onclick="playKural()" style="position: absolute; bottom: 10px; right: 10px; padding: 5px 12px; font-size: 13px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                    <button class="listen-btn" onclick="playKural()"
+                                        style="position: absolute; bottom: 10px; right: 10px; padding: 5px 12px; font-size: 13px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
                                         🔊 கேள்
                                     </button>
                                 </div>
@@ -172,69 +151,6 @@
                             </p>
                         </div>
                         {% endif %} -->
-                        <div>
-                            <div class="button-container practice-container" id="controls" style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-                                <button id="recordButton" class="pill-btn record-btn">
-                                    🎤 ரெக்கார்டு
-                                </button>
-                                <button id="pauseButton" disabled class="pill-btn pause-btn">
-                                    ⏸ இடைநிறுத்து
-                                </button>
-                                <button id="stopButton" disabled class="pill-btn stop-btn">
-                                    ⏹ நிறுத்து
-                                </button>
-                            </div>
-                            <div>
-                                <div id="">
-                                    <!-- <button id="recordButton">Record</button>
-                                    <button id="pauseButton" disabled>Pause</button>
-                                    <button id="stopButton" disabled>Stop</button> -->
-                                </div>
-                                <!-- <div id="formats">Format: start recording to see sample rate</div> -->
-                                <ol id="recordingsList" style="list-style: none; padding: 0;"></ol>
-                                
-                                <!-- Result Card -->
-                                <div id="resultCard" style="display: none; margin-top: 15px; background: transparent;">
-                                    <div style="display: flex; justify-content: flex-end; width: 100%;">
-                                        <h3 style="color: #4CAF50; margin-top:0; font-size: 1.1rem; text-align: right;">முடிவு / Result</h3>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                        <span style="font-weight: bold; font-size: 0.9rem;">துல்லியம் (Accuracy): <span id="accuracyText">0%</span></span>
-                                        <span style="font-weight: bold; font-size: 1.1rem; color: #007bff;" id="scoreText">0 / 0</span>
-                                    </div>
-                                    <div style="width: 100%; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; height: 8px; margin-bottom: 20px;">
-                                        <div id="accuracyBar" style="width: 0%; height: 100%; background-color: #4CAF50; transition: width 0.8s ease-in-out;"></div>
-                                    </div>
-                                    
-                                    <div id="wrongWordsContainer" style="display: none; margin-bottom: 12px; background: #ffebee; padding: 12px; border-radius: 8px;">
-                                        <p style="margin: 0 0 8px 0; color: #d32f2f; font-weight: bold; font-size: 0.9rem;">தவறான வார்த்தைகள் (<span id="wrongCount">0</span>):</p>
-                                        <ul id="wrongWordsList" style="margin: 0; padding-left: 20px; color: #b71c1c; font-size: 0.85rem; line-height: 1.4;"></ul>
-                                    </div>
-                                    
-                                    <div id="missingWordsContainer" style="display: none; background: #fff3e0; padding: 12px; border-radius: 8px;">
-                                        <p style="margin: 0 0 8px 0; color: #e65100; font-weight: bold; font-size: 0.9rem;">விடுபட்ட வார்த்தைகள் (<span id="missingCount">0</span>):</p>
-                                        <ul id="missingWordsList" style="margin: 0; padding-left: 20px; color: #e65100; font-size: 0.85rem; line-height: 1.4;"></ul>
-                                    </div>
-                                </div>
-                                
-                                <div class="navigation-btns" id="bottomActions" style="display: none; margin-top: 15px;">
-                                    <div class="back">
-                                        <a href="/learn_thirukkural?kuralId={{kural['kural_id']}}">
-                                            <p class="back-button">மீண்டும் முயற்சி செய்</p>
-                                        </a>
-                                    </div>
-                                    <div class="next">
-                                        <a href="/learn_thirukkural?kuralId={{kural['kural_id']+1}}">
-                                            <p class="next-button">அடுத்தது &gt;</p>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
-                                <script
-                                    src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
-                                <script src="../static/js/recordAudio.js"></script>
-                            </div>
                             <div class="kural-vilakam-container">
                                 <div class="kural-vilakam-heading">
                                     <p>குறள் விளக்கம்:</p>
@@ -256,7 +172,7 @@
                                 </a>
                             </div>
                             <div class="next">
-                                <a href="">
+                                <a href="learn_thirukkural?kuralId={{kural['kural_id']+1}}">
                                     <p class="next-button">அடுத்தது &gt;</p>
                                 </a>
                             </div>
@@ -265,131 +181,66 @@
                 </div>
             </div>
         </div>
-        <script src="../static/js/index.min.js"></script>
         <script>
-            // Hide original nav when result is shown
-            const btnObserver = new MutationObserver(function() {
-                if (document.getElementById('bottomActions').style.display !== 'none') {
-                    document.getElementById('originalNav').style.display = 'none';
-                }
-            });
-            btnObserver.observe(document.getElementById('bottomActions'), { attributes: true, attributeFilter: ['style'] });
-            
             var x = document.getElementById("myAudio");
             function playKural() {
                 console.log("=== playKural() Clicked ===");
                 var kuralIdEl = document.getElementById("kuralId");
-                console.log("kuralIdEl element:", kuralIdEl);
                 var kuralId = kuralIdEl ? kuralIdEl.value : null;
-                console.log("kuralId value:", kuralId);
                 if (!kuralId) {
                     console.error("Error: kuralId not found in page!");
                     return;
                 }
 
                 var btn = document.querySelector(".listen-btn");
-                var originalContent = btn.innerHTML;
-                console.log("Updating button to loading state...");
-                btn.innerHTML = 'ஏற்றப்படுகிறது...';
-                btn.disabled = true;
+                var originalContent = btn ? btn.innerHTML : '🔊 கேள்';
+                if (btn) {
+                    btn.innerHTML = 'ஏற்றப்படுகிறது...';
+                    btn.disabled = true;
+                }
 
                 var url = '/get_kural_audio/' + kuralId;
-                console.log("Initiating fetch to backend route:", url);
-
                 fetch(url)
                     .then(function (response) {
-                        console.log("Received response from backend, status:", response.status);
                         return response.json();
                     })
                     .then(function (data) {
-                        console.log("Parsed JSON response data:", data);
                         if (data.audio_url) {
-                            console.log("Setting audio element source to:", data.audio_url);
+                            if (!x) {
+                                x = document.createElement("audio");
+                                x.id = "myAudio";
+                                document.body.appendChild(x);
+                            }
                             x.src = data.audio_url;
                             x.load();
-                            console.log("Triggering audio play...");
                             x.play().then(function () {
-                                console.log("Playback successfully started!");
-                                btn.innerHTML = originalContent;
-                                btn.disabled = false;
+                                if (btn) {
+                                    btn.innerHTML = originalContent;
+                                    btn.disabled = false;
+                                }
                             }).catch(function (e) {
-                                console.error("Browser playback blocked or failed:", e);
-                                btn.innerHTML = originalContent;
-                                btn.disabled = false;
+                                console.error("Browser playback error:", e);
+                                if (btn) {
+                                    btn.innerHTML = originalContent;
+                                    btn.disabled = false;
+                                }
                             });
                         } else {
-                            console.error("Backend did not return audio_url:", data);
-                            btn.innerHTML = originalContent;
-                            btn.disabled = false;
+                            if (btn) {
+                                btn.innerHTML = originalContent;
+                                btn.disabled = false;
+                            }
                             alert("ஆடியோ ஏற்றப்பட முடியவில்லை.");
                         }
                     })
                     .catch(function (err) {
-                        console.error("Fetch promise execution rejected/failed:", err);
-                        btn.innerHTML = originalContent;
-                        btn.disabled = false;
-                    });
-            }
-
-            function openPopup() {
-                popup.classList.add('active');
-                confe.classList.add('active');
-            }
-            let popup = document.querySelector('.popup');
-            let close = document.querySelector('.close');
-            let confe = document.querySelector('#my-canvas');
-
-
-            function loadActionSequence() {
-                var kuralIdEl = document.getElementById("kuralId");
-                var kuralId = kuralIdEl ? kuralIdEl.value : null;
-                if (!kuralId) return;
-
-                var url = '/get_kural_action/' + kuralId;
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success && data.video_url) {
-                            var loadingEl = document.getElementById('actionLoading');
-                            if (loadingEl) loadingEl.style.display = 'none';
-
-                            const slideshow = document.getElementById('kenBurnsSlideshow');
-                            if (!slideshow) return;
-
-                            // Clear any existing content
-                            slideshow.innerHTML = '';
-
-                            // Create video element
-                            const video = document.createElement('video');
-                            video.src = data.video_url;
-                            video.autoplay = true;
-                            video.loop = true;
-                            video.muted = true;
-                            video.playsInline = true;
-                            video.style.width = '100%';
-                            video.style.height = '100%';
-                            video.style.objectFit = 'cover';
-                            video.style.borderRadius = '8px';
-                            video.style.boxShadow = '0px 4px 8px rgba(0,0,0,0.2)';
-
-                            slideshow.appendChild(video);
+                        console.error("Fetch failed:", err);
+                        if (btn) {
+                            btn.innerHTML = originalContent;
+                            btn.disabled = false;
                         }
-                    })
-                    .catch(err => {
-                        console.error('Failed to load action sequence', err);
-                        var loadingEl = document.getElementById('actionLoading');
-                        if (loadingEl) loadingEl.innerHTML = '<p>Failed to load AI video</p>';
                     });
             }
-
-            // Call it immediately since script is at the bottom of body
-            loadActionSequence();
-
-            var confettiSettings = { target: 'my-canvas' };
-            var confetti = new ConfettiGenerator(confettiSettings);
-            confetti.render();
-
-
         </script>
 </body>
 

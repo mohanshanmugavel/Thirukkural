@@ -42,7 +42,7 @@ $("form[name=login_form").submit(function (e) {
 
 
 
-$("form[name=adhigaram_filter_form").submit(function (e) {
+$("form[name=adhigaram_filter_form]").submit(function (e) {
     var $form = $(this);
     var data = $form.serialize();
 
@@ -60,13 +60,20 @@ $("form[name=adhigaram_filter_form").submit(function (e) {
                 var select_kural = document.getElementById("select-kural-" + kuralId);
                 var kural = document.getElementById("kural-" + kuralId);
                 var kural_number = ((adhigaram_id - 1) * 10) + kuralId;
-                kural.innerHTML = kural_number
-                select_kural.href = "learn_thirukkural?kuralId=" + kural_number;
+                if (kural) kural.innerHTML = kural_number;
+                if (select_kural) select_kural.href = "learn_thirukkural?kuralId=" + kural_number;
             }
         },
     })
     e.preventDefault();
 });
+
+$(document).on("change", "#select_adhigaram", function () {
+    if ($(this).val() !== "") {
+        $("form[name=adhigaram_filter_form]").submit();
+    }
+});
+
 
 
 $("form[name=adhigaram_game_form").submit(function (e) {

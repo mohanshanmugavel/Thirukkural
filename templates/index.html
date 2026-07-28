@@ -126,31 +126,21 @@
                                         src="../static/images/diamond.png" alt="Diamonds">
                                 </th>
                             </tr>
+                            {% if leaderboard %}
+                            {% for u in leaderboard %}
+                            <tr>
+                                <td class="rank">{{ u.rank }}</td>
+                                <td class="user-name">{{ u.name }}</td>
+                                <td class="diamond-points">{{ u.points }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
                             <tr>
                                 <td class="rank">#1</td>
-                                <td class="user-name">Kumar</td>
-                                <td class="diamond-points">423</td>
+                                <td class="user-name">--</td>
+                                <td class="diamond-points">0</td>
                             </tr>
-                            <tr>
-                                <td class="rank">#2</td>
-                                <td class="user-name">Linga</td>
-                                <td class="diamond-points">394</td>
-                            </tr>
-                            <tr>
-                                <td class="rank">#3</td>
-                                <td class="user-name">Nolen</td>
-                                <td class="diamond-points">374</td>
-                            </tr>
-                            <tr>
-                                <td class="rank">#4</td>
-                                <td class="user-name">Selava Ragavan</td>
-                                <td class="diamond-points">352</td>
-                            </tr>
-                            <tr>
-                                <td class="rank">#5</td>
-                                <td class="user-name">Munaf Patel</td>
-                                <td class="diamond-points">343</td>
-                            </tr>
+                            {% endif %}
                         </table>
                     </div>
                 </div>
@@ -159,14 +149,14 @@
                         <div class="streak-container border">
                             <p class="streak-title">தொடர்ந்து கற்றல் </p>
                             <div class="streak-circle">
-                                <p class="streak-value"><span id="streak-value">13</span><br>நாட்கள்</p>
+                                <p class="streak-value"><span id="streak-value">{{ streak if streak is defined else 0 }}</span><br>நாட்கள்</p>
                             </div>
                         </div>
                     </div>
                     <div class="learnt-kural">
                         <div class="kural-container border">
                             <p class="learnt-kural-title">கற்ற குறள்கள் </p>
-                            <p class="learnt-kural-value"><span id="completed-kural">133</span></p>
+                            <p class="learnt-kural-value"><span id="completed-kural">{{ completed_kural if completed_kural is defined else 0 }}</span></p>
                         </div>
                     </div>
                     <div class="last-aadhikaram">
