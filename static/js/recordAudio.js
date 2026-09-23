@@ -290,8 +290,36 @@ function createDownloadLink(blob) {
                         }
                     }
 
-                    // Perfect Score Check
-                    if (data.accuracy === 100) {
+                    // Perfect Score / Voice Result Check
+                    var stars = 0;
+                    if (data.accuracy >= 95) stars = 3;
+                    else if (data.accuracy >= 80) stars = 2;
+                    else if (data.accuracy >= 60) stars = 1;
+
+                    var starsDisplay = document.getElementById("starsDisplay");
+                    if (starsDisplay) {
+                        starsDisplay.innerText = (stars === 3) ? "⭐⭐⭐" : (stars === 2) ? "⭐⭐" : (stars === 1) ? "⭐" : "❌ முயற்சி செய்";
+                    }
+                    var accVal = document.getElementById("accuracyVal");
+                    if (accVal) accVal.innerText = (data.accuracy || 0) + "%";
+                    var accFill = document.getElementById("accuracyBarFill");
+                    if (accFill) accFill.style.width = (data.accuracy || 0) + "%";
+
+                    var correctWordsEl = document.getElementById("correctWordsCount");
+                    if (correctWordsEl) correctWordsEl.innerText = data.count || 0;
+                    var wrongWordsEl = document.getElementById("wrongWordsCount");
+                    if (wrongWordsEl) wrongWordsEl.innerText = (data.wrong_words ? data.wrong_words.length : 0);
+                    var missingWordsEl = document.getElementById("missingWordsCount");
+                    if (missingWordsEl) missingWordsEl.innerText = (data.missing_words ? data.missing_words.length : 0);
+
+                    var vCard = document.getElementById("voiceResultCard");
+                    if (vCard) vCard.style.display = "block";
+
+                    if (typeof handleVoiceResult === "function") {
+                        handleVoiceResult(data.accuracy || 0, stars, data);
+                    }
+
+                    if (data.accuracy >= 60) {
                         playSuccessSound();
                         var confe = document.querySelector('#my-canvas');
                         if (confe) confe.classList.add('active');
@@ -301,6 +329,7 @@ function createDownloadLink(blob) {
                             confetti.render();
                         }
                     }
+
                 } catch (err) {
                     console.error("Failed to parse JSON response or update UI:", err);
                     alert("பிழை ஏற்பட்டது. மீண்டும் முயற்சி செய்யவும்.");

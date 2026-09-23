@@ -445,3 +445,388 @@ class kural:
                 })
             
             return jsonify({"leaderboard": formatted_leaderboard}), 200
+
+    def get_kurals_grid(self):
+        from flask import request, jsonify, session
+        from app import db
+        from user.models import normalize_user_data
+        
+        adhigaram_id = request.args.get('adhigaram_id')
+        search_query = request.args.get('search', '').strip()
+        page = int(request.args.get('page', 1))
+        
+        query = {}
+        if adhigaram_id and adhigaram_id.isdigit():
+            aid = int(adhigaram_id)
+            kural_start = (aid - 1) * 10 + 1
+            kural_end = aid * 10
+            query["kural_id"] = {"$gte": kural_start, "$lte": kural_end}
+        elif search_query:
+            if search_query.isdigit():
+                query["kural_id"] = int(search_query)
+            else:
+                query["$or"] = [
+                    {"kural.0.0": {"$regex": search_query, "$options": "i"}},
+                    {"kural.1.0": {"$regex": search_query, "$options": "i"}},
+                    {"aadhigaram": {"$regex": search_query, "$options": "i"}}
+                ]
+        else:
+            query["kural_id"] = {"$gte": (page - 1) * 10 + 1, "$lte": page * 10}
+            
+        kurals = list(db.kural_data.find(query, {"_id": 0}).sort("kural_id", 1))
+        
+        user_email = session.get('user', {}).get('email')
+        user_data = db.user_details.find_one({"email": user_email}) if user_email else None
+        if user_data:
+            user_data = normalize_user_data(user_data)
+        else:
+            user_data = session.get('user', {})
+            
+        k_prog = user_data.get('kural_progress', {})
+        
+        results = []
+        for k in kurals:
+            kid_str = str(k['kural_id'])
+            prog = k_prog.get(kid_str, {})
+            
+            r1 = prog.get('round1_completed', False)
+            r2 = prog.get('round2_completed', False)
+            r3 = prog.get('round3_completed', False)
+            
+            rounds_count = (1 if r1 else 0) + (1 if r2 else 0) + (1 if r3 else 0)
+            
+            if r3:
+                status = "நிறைவடைந்தது"
+            elif r1 or r2:
+                status = "செயலில் உள்ளது"
+            else:
+                status = "தொடங்கப்படவில்லை"
+                
+            line1 = k['kural'][0][0] if 'kural' in k and len(k['kural']) > 0 and len(k['kural'][0]) > 0 else ""
+            line2 = k['kural'][1][0] if 'kural' in k and len(k['kural']) > 1 and len(k['kural'][1]) > 0 else ""
+            
+            results.append({
+                "kural_id": k['kural_id'],
+                "aadhigaram": k.get('aadhigaram', ''),
+                "line1": line1,
+                "line2": line2,
+                "status": status,
+                "rounds_completed": rounds_count,
+                "round1_completed": r1,
+                "round2_completed": r2,
+                "round3_completed": r3,
+                "coins": prog.get('coins_earned', 0),
+                "diamonds": prog.get('diamonds_earned', 0)
+            })
+            
+        return jsonify({"success": True, "kurals": results}), 200
+
+    def evaluate_choose_round(self):
+        from flask import request, jsonify, session
+        from app import db
+        from user.models import normalize_user_data
+        
+        data = request.get_json() or request.form
+        kural_id = str(data.get('kuralId'))
+        selected_word = data.get('selected_word', '').strip()
+        correct_word = data.get('correct_word', '').strip()
+        
+        is_correct = (selected_word == correct_word)
+        
+        user_email = session.get('user', {}).get('email')
+        if not user_email:
+            return jsonify({"error": "User not logged in"}), 401
+            
+        user = db.user_details.find_one({"email": user_email})
+        user = normalize_user_data(user)
+        
+        k_prog = user.setdefault('kural_progress', {})
+        k_data = k_prog.get(kural_id, {
+            "round1_completed": False,
+            "round2_completed": False,
+            "round3_completed": False,
+            "coins_earned": 0,
+            "diamonds_earned": 0,
+            "total_attempts": 0,
+            "best_score": 0,
+            "bonus_claimed": False
+        })
+        
+        k_data["total_attempts"] = k_data.get("total_attempts", 0) + 1
+        
+        coins_rewarded = 0
+        diamonds_rewarded = 0
+        already_completed = k_data.get("round1_completed", False)
+        
+        if is_correct:
+            if not already_completed:
+                coins_rewarded = 1
+                diamonds_rewarded = 0
+                k_data["round1_completed"] = True
+                k_data["coins_earned"] = k_data.get("coins_earned", 0) + 1
+                k_data["diamonds_earned"] = k_data.get("diamonds_earned", 0) + 0
+                
+                user["coins"] += 1
+                user["diamonds"] += 0
+                user["xp"] += 1
+                user["level"] = 1 + (user["xp"] // 100)
+                user["points"]["stars"]["total"] = user["coins"]
+                user["points"]["diamonds"]["total"] = user["diamonds"]
+                
+        user["stats"]["total_games_played"] = user["stats"].get("total_games_played", 0) + 1
+        k_prog[kural_id] = k_data
+        
+        db.user_details.update_one(
+            {"email": user_email},
+            {"$set": {
+                "coins": user["coins"],
+                "diamonds": user["diamonds"],
+                "xp": user["xp"],
+                "level": user["level"],
+                "stats": user["stats"],
+                "kural_progress": user["kural_progress"],
+                "points.stars.total": user["coins"],
+                "points.diamonds.total": user["diamonds"]
+            }}
+        )
+        session['user'] = user
+        session.modified = True
+        
+        return jsonify({
+            "success": True,
+            "is_correct": is_correct,
+            "score": 1 if is_correct else 0,
+            "coins_rewarded": coins_rewarded,
+            "diamonds_rewarded": diamonds_rewarded,
+            "already_completed": already_completed,
+            "round1_completed": k_data["round1_completed"],
+            "round2_unlocked": k_data["round1_completed"]
+        }), 200
+
+    def evaluate_arrange_round(self):
+        from flask import request, jsonify, session
+        from app import db
+        from user.models import normalize_user_data
+        
+        data = request.get_json() or {}
+        kural_id = str(data.get('kuralId'))
+        user_words = data.get('words', [])
+        
+        kural_record = db.kural_data.find_one({"kural_id": int(kural_id)})
+        if not kural_record:
+            return jsonify({"error": "Kural not found"}), 404
+            
+        correct_words = (kural_record['kural'][0][0] + " " + kural_record['kural'][1][0]).split()
+        
+        is_correct = (user_words == correct_words)
+        mismatched_indices = []
+        for i in range(min(len(user_words), len(correct_words))):
+            if user_words[i] != correct_words[i]:
+                mismatched_indices.append(i)
+                
+        user_email = session.get('user', {}).get('email')
+        if not user_email:
+            return jsonify({"error": "User not logged in"}), 401
+            
+        user = db.user_details.find_one({"email": user_email})
+        user = normalize_user_data(user)
+        
+        k_prog = user.setdefault('kural_progress', {})
+        k_data = k_prog.get(kural_id, {
+            "round1_completed": False,
+            "round2_completed": False,
+            "round3_completed": False,
+            "coins_earned": 0,
+            "diamonds_earned": 0,
+            "total_attempts": 0,
+            "best_score": 0,
+            "bonus_claimed": False
+        })
+        
+        k_data["total_attempts"] = k_data.get("total_attempts", 0) + 1
+        
+        coins_rewarded = 0
+        diamonds_rewarded = 0
+        already_completed = k_data.get("round2_completed", False)
+        
+        arrange_score = max(0, min(7, 7 - len(mismatched_indices)))
+        if not already_completed:
+            coins_rewarded = arrange_score
+            diamonds_rewarded = 0
+            if is_correct:
+                k_data["round2_completed"] = True
+            k_data["coins_earned"] = k_data.get("coins_earned", 0) + arrange_score
+            
+            user["coins"] += arrange_score
+            user["diamonds"] += 0
+            user["xp"] += arrange_score
+            user["level"] = 1 + (user["xp"] // 100)
+            user["points"]["stars"]["total"] = user["coins"]
+            user["points"]["diamonds"]["total"] = user["diamonds"]
+                
+        user["stats"]["total_games_played"] = user["stats"].get("total_games_played", 0) + 1
+        k_prog[kural_id] = k_data
+        
+        db.user_details.update_one(
+            {"email": user_email},
+            {"$set": {
+                "coins": user["coins"],
+                "diamonds": user["diamonds"],
+                "xp": user["xp"],
+                "level": user["level"],
+                "stats": user["stats"],
+                "kural_progress": user["kural_progress"],
+                "points.stars.total": user["coins"],
+                "points.diamonds.total": user["diamonds"]
+            }}
+        )
+        session['user'] = user
+        session.modified = True
+        
+        arrange_score = max(0, 7 - len(mismatched_indices))
+        return jsonify({
+            "success": True,
+            "is_correct": is_correct,
+            "score": arrange_score,
+            "correct_count": arrange_score,
+            "mismatched_indices": mismatched_indices,
+            "coins_rewarded": coins_rewarded,
+            "diamonds_rewarded": diamonds_rewarded,
+            "already_completed": already_completed,
+            "round2_completed": k_data["round2_completed"],
+            "round3_unlocked": k_data["round2_completed"]
+        }), 200
+
+    def evaluate_voice_round(self):
+        from flask import request, jsonify, session
+        from app import db
+        from user.models import normalize_user_data
+        from datetime import datetime
+        
+        data = request.get_json() or {}
+        kural_id = str(data.get('kuralId'))
+        accuracy = int(data.get('accuracy', 0))
+        
+        if accuracy >= 95:
+            stars = 3
+        elif accuracy >= 80:
+            stars = 2
+        elif accuracy >= 60:
+            stars = 1
+        else:
+            stars = 0
+            
+        is_passed = (accuracy >= 60)
+        
+        user_email = session.get('user', {}).get('email')
+        if not user_email:
+            return jsonify({"error": "User not logged in"}), 401
+            
+        user = db.user_details.find_one({"email": user_email})
+        user = normalize_user_data(user)
+        
+        k_prog = user.setdefault('kural_progress', {})
+        k_data = k_prog.get(kural_id, {
+            "round1_completed": False,
+            "round2_completed": False,
+            "round3_completed": False,
+            "coins_earned": 0,
+            "diamonds_earned": 0,
+            "total_attempts": 0,
+            "best_score": 0,
+            "bonus_claimed": False
+        })
+        
+        k_data["total_attempts"] = k_data.get("total_attempts", 0) + 1
+        
+        r1_score = int(data.get('r1_score', 1 if k_data.get("round1_completed") else 0))
+        r2_score = int(data.get('r2_score', 7 if k_data.get("round2_completed") else 0))
+        r3_score = min(7, max(0, int(round((accuracy / 100.0) * 7))))
+        attempt_total_score = r1_score + r2_score + r3_score
+        
+        if attempt_total_score > k_data.get("best_score", 0):
+            k_data["best_score"] = attempt_total_score
+            
+        user["stats"]["total_voice_challenges"] = user["stats"].get("total_voice_challenges", 0) + 1
+        user["stats"]["accuracy_sum"] = user["stats"].get("accuracy_sum", 0) + accuracy
+        user["stats"]["accuracy_count"] = user["stats"].get("accuracy_count", 0) + 1
+        user["stats"]["total_games_played"] = user["stats"].get("total_games_played", 0) + 1
+        
+        coins_rewarded = 0
+        diamonds_rewarded = 0
+        bonus_coins = 0
+        bonus_diamonds = 0
+        badge_awarded = None
+        already_completed = k_data.get("round3_completed", False)
+        
+        r3_words_correct = max(0, min(7, int(round((accuracy / 100.0) * 7))))
+        
+        if not already_completed:
+            coins_rewarded = r3_words_correct
+            diamonds_rewarded = 1 if is_passed else 0
+            if is_passed:
+                k_data["round3_completed"] = True
+                k_data["completion_date"] = datetime.now().isoformat()
+                user["stats"]["total_kurals_completed"] = user["stats"].get("total_kurals_completed", 0) + 1
+                
+            k_data["coins_earned"] = k_data.get("coins_earned", 0) + r3_words_correct
+            k_data["diamonds_earned"] = k_data.get("diamonds_earned", 0) + diamonds_rewarded
+            
+            user["coins"] += r3_words_correct
+            user["diamonds"] += diamonds_rewarded
+            user["xp"] += r3_words_correct
+            
+        if k_data.get("round1_completed") and k_data.get("round2_completed") and k_data.get("round3_completed") and not k_data.get("bonus_claimed"):
+            bonus_coins = 0
+            bonus_diamonds = 1
+            badge_awarded = "Kural Master"
+            k_data["bonus_claimed"] = True
+            k_data["diamonds_earned"] += 1
+            user["diamonds"] += 1
+            
+            if "badges" not in user or not isinstance(user["badges"], list):
+                user["badges"] = []
+            if "Kural Master" not in user["badges"]:
+                user["badges"].append("Kural Master")
+                    
+        user["level"] = 1 + (user["xp"] // 100)
+        user["points"]["stars"]["total"] = user["coins"]
+        user["points"]["diamonds"]["total"] = user["diamonds"]
+        
+        k_prog[kural_id] = k_data
+        
+        db.user_details.update_one(
+            {"email": user_email},
+            {"$set": {
+                "coins": user["coins"],
+                "diamonds": user["diamonds"],
+                "xp": user["xp"],
+                "level": user["level"],
+                "badges": user["badges"],
+                "stats": user["stats"],
+                "kural_progress": user["kural_progress"],
+                "points.stars.total": user["coins"],
+                "points.diamonds.total": user["diamonds"]
+            }}
+        )
+        session['user'] = user
+        session.modified = True
+        
+        return jsonify({
+            "success": True,
+            "is_passed": is_passed,
+            "stars": stars,
+            "accuracy": accuracy,
+            "r3_score": r3_score,
+            "attempt_total_score": attempt_total_score,
+            "best_score": k_data["best_score"],
+            "coins_rewarded": coins_rewarded,
+            "diamonds_rewarded": diamonds_rewarded,
+            "bonus_coins": bonus_coins,
+            "bonus_diamonds": bonus_diamonds,
+            "badge_awarded": badge_awarded,
+            "already_completed": already_completed,
+            "round3_completed": k_data["round3_completed"],
+            "all_rounds_completed": (k_data.get("round1_completed") and k_data.get("round2_completed") and k_data.get("round3_completed"))
+        }), 200
+

@@ -15,6 +15,12 @@ def signout():
     return User().signout()
 
 
+@app.route('/user/delete_account', methods=['POST', 'GET'])
+@login_required
+def delete_account():
+    return User().delete_account()
+
+
 @app.route('/user/login', methods=['POST'])
 def login():
     return User().login()
@@ -58,7 +64,6 @@ def evaluate_drag_game():
     return kural().evaluate_drag_game()
 
 
-
 @app.route('/fillups_game', methods=["GET"])
 def fillups_game():
     return kural().fillups_game()
@@ -71,6 +76,31 @@ def evaluate_fillups_game():
 @app.route("/transaltee", methods=['POST', 'GET'])
 def transaltee():
     return AudioProceesing().compareKural()
+
+
+@app.route('/api/kurals_grid', methods=['GET'])
+@login_required
+def api_kurals_grid():
+    return kural().get_kurals_grid()
+
+
+@app.route('/api/round/evaluate_choose', methods=['POST'])
+@login_required
+def api_evaluate_choose():
+    return kural().evaluate_choose_round()
+
+
+@app.route('/api/round/evaluate_arrange', methods=['POST'])
+@login_required
+def api_evaluate_arrange():
+    return kural().evaluate_arrange_round()
+
+
+@app.route('/api/round/evaluate_voice', methods=['POST'])
+@login_required
+def api_evaluate_voice():
+    return kural().evaluate_voice_round()
+
 
 
 # N-gram Prediction Game Routes

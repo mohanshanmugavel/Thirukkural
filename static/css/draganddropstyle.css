@@ -56,6 +56,12 @@
 
 .drag-submit-container {
     text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
 }
 
 .popup-btns a {
@@ -77,14 +83,38 @@
 }
 
 .drag-submit-btn {
-    border-radius: 10px;
+    border-radius: 12px;
     color: white;
-    font-size: 17px;
-    box-shadow: 5px 5px 10px 1px rgb(0, 0, 0);
+    font-size: 16px;
+    box-shadow: 3px 3px 8px 1px rgba(0, 0, 0, 0.4);
     font-weight: bold;
-    margin: 0;
-    width: 140px;
-    height: 35px;
+    margin: 5px;
+    min-width: 160px;
+    width: auto;
+    min-height: 42px;
+    height: auto;
+    padding: 8px 22px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.drag-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 6px 12px 1px rgba(0, 0, 0, 0.5);
+}
+
+.replay-btn {
+    background-color: #0288d1 !important;
+}
+
+.replay-btn:hover {
+    background-color: #0277bd !important;
 }
 
 /* Mobile Devices (480px - 767px) */

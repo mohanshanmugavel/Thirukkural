@@ -1,4 +1,0 @@
-venv\Scripts\activate
-flask run
-
-//python -m flask run

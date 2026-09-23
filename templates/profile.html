@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>பயனர் சுயவிவரம் - திருக்குறள் பழகு</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Meera+Inimai&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/basicStyle.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/basicStyle.css') }}">
+    <link rel="stylesheet" href="../static/css/dashboard.css">
+    <style>
+        .profile-container {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+
+        .profile-header-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .user-info-box h2 {
+            margin: 0 0 6px 0;
+            color: #1e293b;
+            font-size: 1.4rem;
+        }
+
+        .user-info-box p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .level-pill {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #4338ca;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 3px 12px;
+            border-radius: 12px;
+            margin-top: 6px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: #6366f1;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin: 6px 0;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .badges-section {
+            margin-top: 28px;
+        }
+
+        .badges-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .badge-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            font-weight: bold;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="navbar-container">
+            <nav>
+                <img src="../static/images/muthir-logo.png" alt="Muthir AI" height="120px" width="120px">
+                <ul>
+                    <li class="nav-cell">
+                        <a href="/index/">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                                <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-cell">
+                        <a href="/select_game">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-cell">
+                        <a href="/profile">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-cell">
+                        <a href="/user/signout">
+                            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
+                                <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="content-container">
+            <div class="header">
+                <div class="title-content">
+                    <p class="title">பயனர் சுயவிவரம்</p>
+                    <p class="tag-line">உங்கள் குறள் பழகு சாதனைகள்</p>
+                </div>
+                <div class="points-content">
+                    <div class="points">
+                        <div class="point-section">
+                            <img class="point-diamond-img" src="../static/images/diamond.png" alt="Diamonds">
+                            <span class="point-count">{{user['diamonds']}}</span>
+                        </div>
+                        <div class="point-section">
+                            <img class="point-coins-img" src="../static/images/star-icon.png" alt="Coins">
+                            <span class="point-count">{{user['coins']}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="profile-container">
+                    <div class="profile-header-card">
+                        <div class="avatar-circle">
+                            {{ user['name'][0].upper() if user['name'] else 'ப' }}
+                        </div>
+                        <div class="user-info-box">
+                            <h2>{{ user['name'] }}</h2>
+                            <p>{{ user['email'] }}</p>
+                            <span class="level-pill">நிலை {{ user['level'] }} • {{ user['xp'] }} புள்ளிகள்</span>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">நிறைவு செய்த குறள்கள்</div>
+                            <div class="stat-value" style="color: #4f46e5;">{{ completed_count }} / 1330</div>
+                            <div class="stat-label" style="font-weight: normal;">({{ completion_pct }}%)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">மொத்த நாணயங்கள்</div>
+                            <div class="stat-value" style="color: #d97706;">🪙 {{ user['coins'] }}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">வைரங்கள்</div>
+                            <div class="stat-value" style="color: #0284c7;">💎 {{ user['diamonds'] }}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">தற்போதைய தொடர்</div>
+                            <div class="stat-value" style="color: #ea580c;">🔥 {{ user['streak']['current_streak'] }} நாட்கள்</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">நீண்ட தொடர்</div>
+                            <div class="stat-value" style="color: #dc2626;">⭐ {{ user['streak']['longest_streak'] }} நாட்கள்</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">சராசரி துல்லியம்</div>
+                            <div class="stat-value" style="color: #10b981;">🎯 {{ avg_accuracy }}%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">மொத்த விளையாட்டுகள்</div>
+                            <div class="stat-value" style="color: #6366f1;">🎮 {{ user['stats']['total_games_played'] }}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">குரல் சவால்கள்</div>
+                            <div class="stat-value" style="color: #8b5cf6;">🎙️ {{ user['stats']['total_voice_challenges'] }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Badges Showcase -->
+                    <div class="badges-section">
+                        <h3 style="color: #1e293b; margin-bottom: 8px;">வென்ற முத்திரைகள்</h3>
+                        <div class="badges-grid">
+                            {% if user['badges'] %}
+                                {% for b in user['badges'] %}
+                                    <div class="badge-chip">🏆 {{ b }}</div>
+                                {% endfor %}
+                            {% else %}
+                                <div style="color: #64748b; font-size: 0.9rem;">இன்னும் முத்திரைகள் எதுவும் பெறப்படவில்லை. குறள் 3 நிலைகளையும் முடித்து முத்திரைகளைப் பெறுங்கள்!</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Delete Account / Danger Zone Section -->
+                    <div class="danger-zone-section" style="margin-top: 32px; padding-top: 24px; border-top: 2px dashed #fee2e2;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                            <div>
+                                <h4 style="color: #dc2626; margin: 0 0 4px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                    கணக்கை நீக்கு (Delete Account)
+                                </h4>
+                                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">
+                                    உங்கள் கணக்கு மற்றும் விளையாட்டுச் சாதனைகள் அனைத்தும் நிரந்தரமாக நீக்கப்படும்.
+                                </p>
+                            </div>
+                            <button type="button" onclick="openDeleteModal()" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s ease;">
+                                🗑️ கணக்கை நீக்கு
+                            </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 20px; width: 90%; max-width: 440px; padding: 28px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); text-align: center;">
+            <div style="width: 60px; height: 60px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem;">
+                ⚠️
+            </div>
+            <h3 style="color: #1e293b; margin: 0 0 10px 0; font-size: 1.3rem;">நிச்சயமாக கணக்கை நீக்க விரும்புகிறீர்களா?</h3>
+            <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px; line-height: 1.5;">
+                உங்கள் கணக்கு, ஈட்டிய புள்ளிகள், நாணயங்கள் மற்றும் சாதனைகள் அனைத்தும் <strong>மீட்க முடியாதவாறு நிரந்தரமாக நீக்கப்படும்</strong>.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" onclick="closeDeleteModal()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1;">
+                    ரத்து செய்
+                </button>
+                <form action="/user/delete_account" method="POST" style="flex: 1; margin: 0;">
+                    <button type="submit" style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%;">
+                        ஆம், நீக்கு
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
