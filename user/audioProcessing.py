@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
+import tempfile
+import os
+import uuid
 import speech_recognition as sr
 from app import db
 import wave
@@ -190,7 +193,7 @@ class AudioProceesing:
                 }), 200
 
             f = request.files['audio_data']
-            audio_path = 'audio.wav'
+            audio_path = os.path.join(tempfile.gettempdir(), f"audio_{uuid.uuid4().hex}.wav")
             f.save(audio_path)
 
             # Preprocess audio (gain boost, noise reduction for child voices)

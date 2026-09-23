@@ -142,10 +142,20 @@ def get_kural_action(kural_id):
     return jsonify({"success": True, "video_url": video_url})
 
 
+@app.route('/tmp_audio/<filename>')
+def stream_tmp_audio(filename):
+    import tempfile
+    import os
+    from flask import send_from_directory
+    tmp_audio_dir = os.path.join(tempfile.gettempdir(), 'audio')
+    return send_from_directory(tmp_audio_dir, filename)
+
+
 @app.route('/get_kural_audio/<int:kural_id>', methods=['GET'])
 @login_required
 def get_kural_audio(kural_id):
     import os
+    import tempfile
     import asyncio
     from flask import jsonify, url_for
     from tts import text_to_speech
@@ -153,7 +163,7 @@ def get_kural_audio(kural_id):
 
     # 1. Determine paths
     static_audio_dir = os.path.join(app.static_folder, 'audio')
-    os.makedirs(static_audio_dir, exist_ok=True)
+    tmp_audio_dir = os.path.join(tempfile.gettempdir(), 'audio')
 
     # 2. Check for pre-existing .wav file (backwards compatibility)
     wav_filename = f"kural{kural_id}.wav"
@@ -166,7 +176,12 @@ def get_kural_audio(kural_id):
     mp3_filename = f"kural{kural_id}.mp3"
     mp3_filepath = os.path.join(static_audio_dir, mp3_filename)
     if os.path.exists(mp3_filepath):
-        audio_url = url_for('static', filename=f'audio/{mp3_filename}')
+        audio_url = url_for('static', filename=f'audio/{mp3_filepath}')
+        return jsonify({"audio_url": audio_url}), 200
+
+    tmp_mp3_filepath = os.path.join(tmp_audio_dir, mp3_filename)
+    if os.path.exists(tmp_mp3_filepath):
+        audio_url = url_for('stream_tmp_audio', filename=mp3_filename)
         return jsonify({"audio_url": audio_url}), 200
 
     # 4. Generate TTS if not found
@@ -181,6 +196,20 @@ def get_kural_audio(kural_id):
         line2 = kural_record['kural'][1][0]
         full_text = f"{line1}\n{line2}"
 
+        # Determine target file path (try static, fallback to tmp for read-only Vercel environment)
+        target_filepath = mp3_filepath
+        use_tmp = False
+        try:
+            os.makedirs(static_audio_dir, exist_ok=True)
+            test_file = os.path.join(static_audio_dir, '.write_test')
+            with open(test_file, 'w') as tf:
+                tf.write('ok')
+            os.remove(test_file)
+        except Exception:
+            os.makedirs(tmp_audio_dir, exist_ok=True)
+            target_filepath = tmp_mp3_filepath
+            use_tmp = True
+
         # Run async edge-tts in a dedicated event loop for this request thread
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -189,13 +218,17 @@ def get_kural_audio(kural_id):
                 text=full_text,
                 voice='ta-IN-ValluvarNeural',
                 rate='-12%',
-                output_filename=mp3_filepath
+                output_filename=target_filepath
             ))
         finally:
             loop.close()
 
+        if use_tmp:
+            audio_url = url_for('stream_tmp_audio', filename=mp3_filename)
+        else:
+            audio_url = url_for('static', filename=f'audio/{mp3_filename}')
+
+        return jsonify({"audio_url": audio_url}), 200
+
     except Exception as e:
         return jsonify({"error": f"TTS API Exception: {str(e)}"}), 500
-
-    audio_url = url_for('static', filename=f'audio/{mp3_filename}')
-    return jsonify({"audio_url": audio_url}), 200
